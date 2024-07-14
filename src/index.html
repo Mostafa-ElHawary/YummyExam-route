@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- google font  -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Assistant:wght@200..800&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Snippet&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font awsame -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Assistant:wght@200..800&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Snippet&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- bootstrap -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" /> -->
+    <!-- style -->
+    <link rel="stylesheet" href="../dist/output.css" />
+    <style>
+      .menu-link {
+        opacity: 0;
+        transform: translateX(-100%);
+        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+          opacity 0.6s ease-in-out;
+      }
+      .menu-link.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Start Hero -->
+
+    <section style="height: 100vh" class="Hero">
+      <button id="sidebar-btn" class="sidebar-btn">
+        <div class="menu-stripes"></div>
+        <div class="menu-stripes"></div>
+        <div class="menu-stripes"></div>
+      </button>
+      <section id="sidebar" class="sidebar">
+        <!-- <nav class="menu" style="padding-top: 100px">
+            <ul class="menu-level1 no-style">
+              <li>
+                <a href="#" class="menu-link">Search</a>
+              </li>
+              <li class="menu-toggle">
+                <div class="menu-toggle-btns">
+                  <a href="#" class="menu-link">Categories</a>
+                  <a href="#" class="menu-btn"><div>+</div></a>
+                </div>
+                <ul class="menu-level2 submenu no-style">
+                  <li class="menu-toggle">
+                    <div class="menu-toggle-btns">
+                      <a href="#" class="menu-link">Link on Level 2</a>
+                      <a href="#" class="menu-btn"><div>+</div></a>
+                    </div>
+                    <ul class="menu-level3 submenu no-style">
+                      <li><a href="#" class="menu-link">Link on Level 3</a></li>
+                      <li><a href="#" class="menu-link">Link on Level 3</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                </ul>
+              </li>
+  
+              <li class="menu-toggle">
+                <div class="menu-toggle-btns">
+                  <a href="#" class="menu-link">Area</a>
+                  <a href="#" class="menu-btn"><div>+</div></a>
+                </div>
+                <ul class="menu-level2 submenu no-style">
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                </ul>
+              </li>
+              <li class="menu-toggle">
+                <div class="menu-toggle-btns">
+                  <a href="#" class="menu-link">Ingredients</a>
+                  <a href="#" class="menu-btn"><div>+</div></a>
+                </div>
+                <ul class="menu-level2 submenu no-style">
+                  <li class="menu-toggle">
+                    <div class="menu-toggle-btns">
+                      <a href="#" class="menu-link">Link on Level 2</a>
+                      <a href="#" class="menu-btn"><div>+</div></a>
+                    </div>
+                    <ul class="menu-level3 submenu no-style">
+                      <li><a href="#" class="menu-link">Link on Level 3</a></li>
+                      <li><a href="#" class="menu-link">Link on Level 3</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                </ul>
+              </li>
+              <li class="menu-toggle">
+                <div class="menu-toggle-btns">
+                  <a href="#" class="menu-link">Contact Us</a>
+                  <a href="#" class="menu-btn"><div>+</div></a>
+                </div>
+                <ul class="menu-level2 submenu no-style">
+                  <li class="menu-toggle">
+                    <div class="menu-toggle-btns">
+                      <a href="#" class="menu-link">Link on Level 2</a>
+                      <a href="#" class="menu-btn"><div>+</div></a>
+                    </div>
+                    <ul class="menu-level3 submenu no-style">
+                      <li><a href="#" class="menu-link">Link on Level 3</a></li>
+                      <li><a href="#" class="menu-link">Link on Level 3</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                  <li><a href="#" class="menu-link">Link on Level 2</a></li>
+                </ul>
+              </li>
+            </ul>
+          </nav> -->
+
+        <nav class="menu pt-24">
+          <ul class="menu-level1 list-none">
+            <li>
+              <div class="menu-toggle-btns">
+                <a href="#" class="menu-link">Search</a>
+                <a href="#" class="menu-btn"><div>+</div></a>
+              </div>
+            </li>
+            <li class="menu-toggle">
+              <div class="menu-toggle-btns">
+                <a href="#" class="menu-link" id="loadCategories">Categories</a>
+                <a href="#" class="menu-btn"><div>+</div></a>
+              </div>
+            </li>
+            <li class="menu-toggle">
+              <div class="menu-toggle-btns">
+                <a href="#" class="menu-link" id="loadAreas">Area</a>
+                <a href="#" class="menu-btn"><div>+</div></a>
+              </div>
+            </li>
+            <li class="menu-toggle">
+              <div class="menu-toggle-btns">
+                <a href="#" class="menu-link" id="loadIngredients">Ingredients</a>
+                <a href="#" class="menu-btn"><div>+</div></a>
+              </div>
+            </li>
+            <li class="menu-toggle">
+              <div class="menu-toggle-btns">
+                <a href="#" class="menu-link">Contact Us</a>
+                <a href="#" class="menu-btn"><div>+</div></a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </section>
+
+      <div id="content" class="h-full">
+        <div
+          class="bg-green-500 flex flex-wrap py-5 mx-auto max-w-screen-lg card"
+        ></div>
+      </div>
+    </section>
+    <!-- End Hero -->
+
+    <script src="/jquery-3.7.1.min.js"></script>
+    <!-- <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script> -->
+    <script src="./main.js"></script>
+  </body>
+</html>
