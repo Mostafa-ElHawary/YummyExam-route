@@ -277,6 +277,67 @@ class CardIngredients {
   }
 }
 
+class Contact {
+  constructor() {}
+
+  render() {
+    return `
+    <div class="container mx-auto">
+      <div class="py-5 grid gap-4" id="rowData">
+        <div class="contact min-h-screen flex justify-center items-center">
+          <div class="container w-3/4 text-center">
+            <div class="grid gap-4 md:grid-cols-2">
+              <div>
+                <input id="nameInput" onkeyup="inputsValidation()" type="text" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Name">
+                <div id="nameAlert" class="alert w-full mt-2 hidden text-red-600">
+                  Special characters and numbers not allowed
+                </div>
+              </div>
+              <div>
+                <input id="emailInput" onkeyup="inputsValidation()" type="email" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Email">
+                <div id="emailAlert" class="alert w-full mt-2 hidden text-red-600">
+                  Email not valid *exemple@yyy.zzz
+                </div>
+              </div>
+              <div>
+                <input id="phoneInput" onkeyup="inputsValidation()" type="text" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Phone">
+                <div id="phoneAlert" class="alert w-full mt-2 hidden text-red-600">
+                  Enter valid Phone Number
+                </div>
+              </div>
+              <div>
+                <input id="ageInput" onkeyup="inputsValidation()" type="number" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Age">
+                <div id="ageAlert" class="alert w-full mt-2 hidden text-red-600">
+                  Enter valid age
+                </div>
+              </div>
+              <div>
+                <input id="passwordInput" onkeyup="inputsValidation()" type="password" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Password">
+                <div id="passwordAlert" class="alert w-full mt-2 hidden text-red-600">
+                  Enter valid password *Minimum eight characters, at least one letter and one number:*
+                </div>
+              </div>
+              <div>
+                <input id="repasswordInput" onkeyup="inputsValidation()" type="password" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Repassword">
+                <div id="repasswordAlert" class="alert w-full mt-2 hidden text-red-600">
+                  Enter valid repassword 
+                </div>
+              </div>
+            </div>
+            <button id="submitBtn" disabled class="btn btn-outline-danger border border-red-600 text-red-600 px-2 mt-3 hover:bg-red-600 hover:text-white">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    `;
+  }
+
+  display() {
+    const container = document.querySelector("#content .card");
+    container.innerHTML = this.render();
+  }
+}
+
 const container = document.querySelector("#content .card");
 const loader = document.createElement("div");
 loader.className = "loader hidden";
@@ -489,44 +550,6 @@ const displayIngredientsDetails = async (strIngredient) => {
   }
 };
 
-// document.body.addEventListener(
-//   "click",
-//   async (event) => {
-//     const target = event.target.closest("a[data-id]");
-//     if (!target) return;
-
-//     event.preventDefault();
-//     const { id, type } = target.dataset;
-
-//     switch (type) {
-//       case "category":
-//         await displayCategoryDetails(
-//           target.querySelector("p").textContent.trim()
-//         );
-//         break;
-//       case "area":
-//         await displayAreaDetails(id);
-//         break;
-//       case "ingredient":
-//         await displayIngredientsDetails(id);
-//         break;
-//       default:
-//         await displayMealDetails(id);
-//     }
-//   },
-//   { passive: false }
-// );
-// document
-//   .getElementById("loadCategories")
-//   .addEventListener("click", getCategory);
-
-// document.getElementById("loadAreas").addEventListener("click", getArea);
-// document
-//   .getElementById("loadIngredients")
-//   .addEventListener("click", getIngredients);
-
-// getRandomMeals();
-
 const handleCardClick = async (event) => {
   const target = event.target.closest("a[data-id]");
   if (!target) return;
@@ -535,10 +558,11 @@ const handleCardClick = async (event) => {
   const { id, type } = target.dataset;
 
   const actions = {
-    category: () => displayCategoryDetails(target.querySelector("p").textContent.trim()),
+    category: () =>
+      displayCategoryDetails(target.querySelector("p").textContent.trim()),
     area: () => displayAreaDetails(id),
     ingredient: () => displayIngredientsDetails(id),
-    default: () => displayMealDetails(id)
+    default: () => displayMealDetails(id),
   };
 
   await (actions[type] || actions.default)();
@@ -546,16 +570,23 @@ const handleCardClick = async (event) => {
 
 document.body.addEventListener("click", handleCardClick, { passive: false });
 
-// Optimize button event listeners
 const buttonActions = {
   loadCategories: getCategory,
   loadAreas: getArea,
-  loadIngredients: getIngredients
+  loadIngredients: getIngredients,
 };
 
 Object.entries(buttonActions).forEach(([id, action]) => {
   document.getElementById(id).addEventListener("click", action);
 });
 
-// Initialize
+
+document.addEventListener('click', function(event) {
+  if (event.target.closest('.contact')) {
+    event.preventDefault();
+    const contact = new Contact();
+    contact.display();
+  }
+});
+
 getRandomMeals();
