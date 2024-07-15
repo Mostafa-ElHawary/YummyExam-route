@@ -580,12 +580,14 @@ Object.entries(buttonActions).forEach(([id, action]) => {
   document.getElementById(id).addEventListener("click", action);
 });
 
-
-document.addEventListener('click', function(event) {
-  if (event.target.closest('.contact')) {
-    event.preventDefault();
-    const contact = new Contact();
-    contact.display();
+document.addEventListener('DOMContentLoaded', function() {
+  const contactLink = document.getElementById('contact');
+  if (contactLink) {
+    contactLink.addEventListener('click', function(event) {
+      event.preventDefault();
+      const contact = new Contact();
+      contact.display();
+    });
   }
 });
 
