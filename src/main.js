@@ -124,26 +124,47 @@ const getRandomDelay = () => Math.floor(Math.random() * 501) + 1000;
 
 class Search {
   constructor({ onSearchByName, onSearchByFLetter }) {
-      this.onSearchByName = onSearchByName;
-      this.onSearchByFLetter = onSearchByFLetter;
+    this.onSearchByName = onSearchByName;
+    this.onSearchByFLetter = onSearchByFLetter;
   }
 
   handleSearchByName(event) {
-      const query = event.target.value;
-      if (this.onSearchByName) {
-          this.onSearchByName(query);
-      }
+    const query = event.target.value;
+    if (query.length >= 3) {
+      this.fetchSearchResults(query, 'name');
+    }
   }
 
   handleSearchByFLetter(event) {
-      const query = event.target.value;
-      if (this.onSearchByFLetter) {
-          this.onSearchByFLetter(query);
+    const query = event.target.value;
+    if (query.length === 1) {
+      this.fetchSearchResults(query, 'letter');
+    }
+  }
+
+  async fetchSearchResults(query, type) {
+    let url;
+    if (type === 'name') {
+      url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
+    } else if (type === 'letter') {
+      url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${query}`;
+    }
+
+    try {
+      const data = await fetchData(url);
+      if (data && data.meals) {
+        displayData(data.meals);
+      } else {
+        container.innerHTML = '<p>No results found.</p>';
       }
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+      container.innerHTML = '<p>An error occurred while searching. Please try again.</p>';
+    }
   }
 
   render() {
-      return `
+    return `
       <div class="container w-3/4 mx-auto" id="searchContainer">
           <div class="flex flex-wrap py-4">
               <div class="w-full md:w-1/2 px-2">
@@ -154,29 +175,15 @@ class Search {
               </div>
           </div>
       </div>
-      `;
+    `;
   }
 
   mount(container) {
-      container.innerHTML = this.render();
-      container.querySelector('#searchByName').addEventListener('keyup', (event) => this.handleSearchByName(event));
-      container.querySelector('#searchByFLetter').addEventListener('keyup', (event) => this.handleSearchByFLetter(event));
+    container.innerHTML = this.render();
+    container.querySelector('#searchByName').addEventListener('keyup', (event) => this.handleSearchByName(event));
+    container.querySelector('#searchByFLetter').addEventListener('keyup', (event) => this.handleSearchByFLetter(event));
   }
 }
-
-const searchContainer = document.getElementById('content');
-const search = new Search({
-    onSearchByName: (query) => {
-        console.log('Searching by name:', query);
-    },
-    onSearchByFLetter: (query) => {
-        console.log('Searching by first letter:', query);
-    }
-});
-search.mount(searchContainer)
-
-
-
 
 class MainCard {
   constructor({ idMeal, strMeal, strMealThumb, strTags }) {
@@ -620,14 +627,29 @@ const getIngredients = () =>
     displayIngredients
   );
 
+// const displayData = (meals) => {
+//   const fragment = document.createDocumentFragment();
+//   meals.forEach((meal) => {
+//     const card = new MainCard(meal);
+//     fragment.appendChild(card.renderElement());
+//   });
+//   container.innerHTML = "";
+//   container.appendChild(fragment);
+// };
+
 const displayData = (meals) => {
   const fragment = document.createDocumentFragment();
   meals.forEach((meal) => {
     const card = new MainCard(meal);
     fragment.appendChild(card.renderElement());
   });
-  container.innerHTML = "";
+  container.innerHTML = '';
   container.appendChild(fragment);
+
+  const searchByName = document.getElementById('searchByName');
+  const searchByFLetter = document.getElementById('searchByFLetter');
+  if (searchByName) searchByName.value = '';
+  if (searchByFLetter) searchByFLetter.value = '';
 };
 
 const displayCategory = (categories) => {
@@ -761,123 +783,152 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // contact
-document.addEventListener("DOMContentLoaded", (event) => {
-  const form = document.getElementById("contactForm");
-  const submitBtn = document.getElementById("submitBtn");
-  const loadingIcon = document.getElementById("loadingIcon");
-  const inputs = form.querySelectorAll("input");
-  const alerts = form.querySelectorAll('[id$="Alert"]');
+// document.addEventListener("DOMContentLoaded", (event) => {
+//   const form = document.getElementById("contactForm");
+//   const submitBtn = document.getElementById("submitBtn");
+//   const loadingIcon = document.getElementById("loadingIcon");
+//   const inputs = form.querySelectorAll("input");
+//   const alerts = form.querySelectorAll('[id$="Alert"]');
 
-  // GSAP animations
-  gsap.from("form .form-group", {
-    duration: 1,
-    y: 20,
-    opacity: 0,
-    stagger: 0.1,
-    ease: "power3.out",
+//   // GSAP animations
+//   gsap.from("form .form-group", {
+//     duration: 1,
+//     y: 20,
+//     opacity: 0,
+//     stagger: 0.1,
+//     ease: "power3.out",
+//   });
+
+//   function validateInput(input) {
+//     const inputId = input.id;
+//     const alertId = inputId.replace("Input", "Alert");
+//     const alertElement = document.getElementById(alertId);
+
+//     let isValid = true;
+
+//     switch (inputId) {
+//       case "nameInput":
+//         isValid = /^[a-zA-Z\s]+$/.test(input.value);
+//         break;
+//       case "emailInput":
+//         isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+//         break;
+//       case "phoneInput":
+//         isValid = /^\d{3}-\d{2}-\d{3}$/.test(input.value);
+//         break;
+//       case "ageInput":
+//         isValid = input.value > 0 && input.value < 120;
+//         break;
+//       case "passwordInput":
+//         isValid = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(input.value);
+//         break;
+//       case "repasswordInput":
+//         isValid =
+//           input.value === document.getElementById("passwordInput").value;
+//         break;
+//     }
+
+//     if (isValid) {
+//       gsap.to(alertElement, {
+//         duration: 0.3,
+//         opacity: 0,
+//         height: 0,
+//         onComplete: () => alertElement.classList.add("hidden"),
+//       });
+//       gsap.to(input, {
+//         duration: 0.3,
+//         borderColor: "#10B981",
+//         backgroundColor: "#D1FAE5",
+//       });
+//     } else {
+//       alertElement.classList.remove("hidden");
+//       gsap.to(alertElement, { duration: 0.3, opacity: 1, height: "auto" });
+//       gsap.to(input, {
+//         duration: 0.3,
+//         borderColor: "#EF4444",
+//         backgroundColor: "#FEE2E2",
+//       });
+//     }
+
+//     return isValid;
+//   }
+
+//   function validateForm() {
+//     let isFormValid = true;
+//     inputs.forEach((input) => {
+//       if (!validateInput(input)) {
+//         isFormValid = false;
+//       }
+//     });
+//     submitBtn.disabled = !isFormValid;
+//     if (isFormValid) {
+//       gsap.to(submitBtn, { duration: 0.3, scale: 1.05, repeat: 1, yoyo: true });
+//     }
+//   }
+
+//   inputs.forEach((input) => {
+//     input.addEventListener("input", validateForm);
+//   });
+
+//   form.addEventListener("submit", (e) => {
+//     e.preventDefault();
+//     if (submitBtn.disabled) return;
+
+//     loadingIcon.classList.remove("hidden");
+//     gsap.to(loadingIcon, {
+//       duration: 0.3,
+//       opacity: 1,
+//       rotation: 360,
+//       repeat: -1,
+//       ease: "linear",
+//     });
+
+//     // Simulating form submission
+//     setTimeout(() => {
+//       loadingIcon.classList.add("hidden");
+//       gsap.to(loadingIcon, { duration: 0.3, opacity: 0, rotation: 0 });
+//       alert("Form submitted successfully!");
+//       form.reset();
+//       alerts.forEach((alert) => alert.classList.add("hidden"));
+//       inputs.forEach((input) =>
+//         gsap.to(input, {
+//           duration: 0.3,
+//           borderColor: "#D1D5DB",
+//           backgroundColor: "#F9FAFB",
+//         })
+//       );
+//       submitBtn.disabled = true;
+//     }, 2000);
+//   });
+// });
+
+
+// const searchContainer = document.getElementById('content');
+// const search = new Search({
+//     onSearchByName: (query) => {
+//         console.log('Searching by name:', query);
+//     },
+//     onSearchByFLetter: (query) => {
+//         console.log('Searching by first letter:', query);
+//     }
+// });
+// search.mount(searchContainer)
+
+document.addEventListener('DOMContentLoaded', function() {
+  const searchNav = document.getElementById('searchNav');
+  const contentContainer = document.getElementById('content');
+  let search;
+
+  searchNav.addEventListener('click', function(event) {
+    event.preventDefault();
+    if (!search) {
+      search = new Search({});
+    }
+    contentContainer.innerHTML = ''; 
+    search.mount(contentContainer);
   });
 
-  function validateInput(input) {
-    const inputId = input.id;
-    const alertId = inputId.replace("Input", "Alert");
-    const alertElement = document.getElementById(alertId);
-
-    let isValid = true;
-
-    switch (inputId) {
-      case "nameInput":
-        isValid = /^[a-zA-Z\s]+$/.test(input.value);
-        break;
-      case "emailInput":
-        isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
-        break;
-      case "phoneInput":
-        isValid = /^\d{3}-\d{2}-\d{3}$/.test(input.value);
-        break;
-      case "ageInput":
-        isValid = input.value > 0 && input.value < 120;
-        break;
-      case "passwordInput":
-        isValid = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(input.value);
-        break;
-      case "repasswordInput":
-        isValid =
-          input.value === document.getElementById("passwordInput").value;
-        break;
-    }
-
-    if (isValid) {
-      gsap.to(alertElement, {
-        duration: 0.3,
-        opacity: 0,
-        height: 0,
-        onComplete: () => alertElement.classList.add("hidden"),
-      });
-      gsap.to(input, {
-        duration: 0.3,
-        borderColor: "#10B981",
-        backgroundColor: "#D1FAE5",
-      });
-    } else {
-      alertElement.classList.remove("hidden");
-      gsap.to(alertElement, { duration: 0.3, opacity: 1, height: "auto" });
-      gsap.to(input, {
-        duration: 0.3,
-        borderColor: "#EF4444",
-        backgroundColor: "#FEE2E2",
-      });
-    }
-
-    return isValid;
-  }
-
-  function validateForm() {
-    let isFormValid = true;
-    inputs.forEach((input) => {
-      if (!validateInput(input)) {
-        isFormValid = false;
-      }
-    });
-    submitBtn.disabled = !isFormValid;
-    if (isFormValid) {
-      gsap.to(submitBtn, { duration: 0.3, scale: 1.05, repeat: 1, yoyo: true });
-    }
-  }
-
-  inputs.forEach((input) => {
-    input.addEventListener("input", validateForm);
-  });
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    if (submitBtn.disabled) return;
-
-    loadingIcon.classList.remove("hidden");
-    gsap.to(loadingIcon, {
-      duration: 0.3,
-      opacity: 1,
-      rotation: 360,
-      repeat: -1,
-      ease: "linear",
-    });
-
-    // Simulating form submission
-    setTimeout(() => {
-      loadingIcon.classList.add("hidden");
-      gsap.to(loadingIcon, { duration: 0.3, opacity: 0, rotation: 0 });
-      alert("Form submitted successfully!");
-      form.reset();
-      alerts.forEach((alert) => alert.classList.add("hidden"));
-      inputs.forEach((input) =>
-        gsap.to(input, {
-          duration: 0.3,
-          borderColor: "#D1D5DB",
-          backgroundColor: "#F9FAFB",
-        })
-      );
-      submitBtn.disabled = true;
-    }, 2000);
-  });
+  // ... (rest of your DOMContentLoaded code)
 });
 
 getRandomMeals();
