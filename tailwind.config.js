@@ -1,10 +1,32 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["/src/index.html"],
-
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        'bounce-short': 'bounce 0.5s ease-in-out 2',
+      },
+      transitionProperty: {
+        'height': 'height',
+        'spacing': 'margin, padding',
+      }
+    },
   },
-  plugins: [],
+  variants: {
+    extend: {
+      transform: ['hover', 'focus'],
+      scale: ['hover', 'focus','group-hover'],
+      translate: ['group-hover'],
+      opacity: ['group-hover'],
+      zIndex: {
+        '60': '60',
+      }
+    },
+  },
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+  ],
+  darkMode: 'class',
+
 }
 

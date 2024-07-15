@@ -121,6 +121,63 @@ const memoizedFetchData = memoize(fetchData);
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getRandomDelay = () => Math.floor(Math.random() * 501) + 1000;
 
+
+class Search {
+  constructor({ onSearchByName, onSearchByFLetter }) {
+      this.onSearchByName = onSearchByName;
+      this.onSearchByFLetter = onSearchByFLetter;
+  }
+
+  handleSearchByName(event) {
+      const query = event.target.value;
+      if (this.onSearchByName) {
+          this.onSearchByName(query);
+      }
+  }
+
+  handleSearchByFLetter(event) {
+      const query = event.target.value;
+      if (this.onSearchByFLetter) {
+          this.onSearchByFLetter(query);
+      }
+  }
+
+  render() {
+      return `
+      <div class="container w-3/4 mx-auto" id="searchContainer">
+          <div class="flex flex-wrap py-4">
+              <div class="w-full md:w-1/2 px-2">
+                  <input id="searchByName" class="w-full px-3 py-2 bg-transparent text-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" type="text" placeholder="Search By Name">
+              </div>
+              <div class="w-full md:w-1/2 px-2">
+                  <input id="searchByFLetter" maxlength="1" class="w-full px-3 py-2 bg-transparent text-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" type="text" placeholder="Search By First Letter">
+              </div>
+          </div>
+      </div>
+      `;
+  }
+
+  mount(container) {
+      container.innerHTML = this.render();
+      container.querySelector('#searchByName').addEventListener('keyup', (event) => this.handleSearchByName(event));
+      container.querySelector('#searchByFLetter').addEventListener('keyup', (event) => this.handleSearchByFLetter(event));
+  }
+}
+
+const searchContainer = document.getElementById('content');
+const search = new Search({
+    onSearchByName: (query) => {
+        console.log('Searching by name:', query);
+    },
+    onSearchByFLetter: (query) => {
+        console.log('Searching by first letter:', query);
+    }
+});
+search.mount(searchContainer)
+
+
+
+
 class MainCard {
   constructor({ idMeal, strMeal, strMealThumb, strTags }) {
     Object.assign(this, { idMeal, strMeal, strMealThumb, strTags });
@@ -184,23 +241,92 @@ class MainCardDetails {
       .join("");
 
     return `
-      <div class="meal-details">
-        <img src="${this.strMealThumb}" alt="${
+ <div class="meal-details bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl animate-fade-in-down">
+  <div class="flex flex-col lg:flex-row">
+    <div class="lg:w-1/5 relative group">
+      <img src="${this.strMealThumb}" alt="${
       this.strMeal
-    }" class="meal-thumb">
-        <h2>${this.strMeal}</h2>
-        <p><strong>Category:</strong> ${this.strCategory ?? "N/A"}</p>
-        <p><strong>Area:</strong> ${this.strArea ?? "N/A"}</p>
-        <p><strong>Tags:</strong> ${this.strTags ?? "N/A"}</p>
-        <p><strong>Instructions:</strong> ${this.strInstructions ?? "N/A"}</p>
-        <h3>Ingredients:</h3>
-        <ul>${ingredientsList}</ul>
-        ${
-          this.strYoutube
-            ? `<p><strong>Video:</strong> <a href="${this.strYoutube}" target="_blank">Watch on YouTube</a></p>`
-            : ""
-        }
+    }" class="w-full h-64 lg:h-full object-cover transition-transform duration-500 group-hover:scale-110">
+      <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+        <span class="text-white text-xl font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">${
+          this.strMeal
+        }</span>
       </div>
+    </div>
+    <div class="lg:w-4/5 p-8">
+      <h2 class="text-4xl font-extrabold mb-6 text-gray-800 dark:text-white border-b pb-2 animate-fade-in">${
+        this.strMeal
+      }</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="flex items-center transform hover:scale-105 transition-transform duration-300">
+          <span class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mr-3 animate-pulse">
+            <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          </span>
+          <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-indigo-600 dark:text-indigo-300">Category:</span> ${
+            this.strCategory ?? "N/A"
+          }</p>
+        </div>
+        <div class="flex items-center transform hover:scale-105 transition-transform duration-300">
+          <span class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3 animate-pulse">
+            <svg class="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </span>
+          <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-green-600 dark:text-green-300">Area:</span> ${
+            this.strArea ?? "N/A"
+          }</p>
+        </div>
+        <div class="flex items-center transform hover:scale-105 transition-transform duration-300">
+          <span class="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mr-3 animate-pulse">
+            <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          </span>
+          <p class="text-gray-700 dark:text-gray-300"><span class="font-semibold text-yellow-600 dark:text-yellow-300">Tags:</span> ${
+            this.strTags ?? "N/A"
+          }</p>
+        </div>
+      </div>
+      <div class="mb-8 animate-fade-in">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center">
+          <svg class="w-7 h-7 mr-2 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+          Instructions:
+        </h3>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${
+          this.strInstructions ?? "N/A"
+        }</p>
+      </div>
+     <div class="mb-8">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center">
+          <svg class="w-7 h-7 mr-2 text-red-600 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+          </svg>
+          Ingredients:
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          ${this.ingredients
+            .map(
+              (ingredient, index) => `
+            <div class="flex items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-lg transition-all duration-300 hover:shadow-md transform hover:scale-105">
+              <span class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-800 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                ${index + 1}
+              </span>
+              <span class="text-gray-700 dark:text-gray-300">
+                ${ingredient.ingredient} - ${ingredient.measure}
+              </span>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      </div>
+      ${
+        this.strYoutube
+          ? `<a href="${this.strYoutube}" target="_blank" class="inline-flex items-center px-6 py-3 text-white bg-gradient-to-br from-purple-500 to-indigo-800 rounded-full hover:bg-red-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transform hover:scale-105 animate-bounce">
+               <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+               Watch on YouTube
+             </a>`
+          : ""
+      }
+    </div>
+  </div>
+</div>
     `;
   }
 }
@@ -222,11 +348,18 @@ class Category {
 
   render() {
     return `
-      <a class="w-full md:w-1/4  m-1 p-2 bg-white rounded-md  card  " data-id="${this.idCategory}" data-type="category" href="#">
-        <img src="${this.strCategoryThumb}" alt="${this.strCategory}" class="w-full  mb-2 rounded-md	">
+
+      <a href="#" 
+     class="group block w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 transform transition duration-300 ease-in-out hover:scale-105"
+     data-id="${this.idCategory}" 
+     data-type="category">
+       <img src="${this.strCategoryThumb}" alt="${this.strCategory}"
+        class="w-full  mb-2 rounded-md"
+        >
         <p class='text-black text-center font-semibold'>${this.strCategory}</p>
       </a>
-    `;
+   
+   `;
   }
 }
 
@@ -237,14 +370,28 @@ class CategoryMeals {
 
   render() {
     return `
-      <a class="w-full md:w-1/4 bg-white m-1 rounded-md p-2 card" data-id="${
-        this.idMeal
-      }" href="#">
-        <img src="${this.strMealThumb}" alt="${
+     <div class="group w-full md:w-1/4 bg-white m-2 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+  <a class="block" data-id="${this.idMeal}" href="#">
+    <div class="relative overflow-hidden">
+      <img src="${this.strMealThumb}" alt="${
       this.strMeal ?? ""
-    }" class="w-full mb-2 rounded-md">
-        <p class=' text-black text-center font-semibold'>${this.strMeal}</p>
-      </a>
+    }" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+      <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-300"></div>
+    </div>
+    <div class="p-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2 truncate">${
+        this.strMeal
+      }</h3>
+      <div class="flex items-center justify-between">
+        <button class="text-blue-600 hover:text-blue-800 transition-colors duration-300">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </a>
+</div>
     `;
   }
 }
@@ -257,10 +404,15 @@ class AreaCard {
     return `
 
    
-    <a class="w-full md:w-1/4  p-2 card text-center"href="#" data-id="${this.strArea}"  data-type="area" >
-    <i class="fa-solid fa-house text-white text-5xl		pb-2"></i>
-    <p class='text-white w-full text-2xl'>${this.strArea}</p>
-    </a>
+  <a href="#" class="area-card relative overflow-hidden w-full md:w-1/4 h-48 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105" data-id="${this.strArea}" data-type="area">
+  <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-800 opacity-75"></div>
+  <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-white z-10">
+    <i class="fa-solid fa-globe text-4xl mb-3 animate-bounce"></i>
+    <h3 class="text-2xl font-bold mb-2">${this.strArea}</h3>
+    <p class="text-sm opacity-0 transform translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">Discover flavors</p>
+  </div>
+  <div class="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 hover:opacity-20"></div>
+</a>
    
      
     `;
@@ -273,10 +425,20 @@ class CardIngredients {
   }
   render() {
     return `
-  <a class="w-full md:w-1/4 bg-red p-2 card" data-id="${this.strIngredient}" data-type="ingredient" href="#">
-  <h1 class='text-white'>${this.strIngredient}</h1>
-  <i class="fa-solid fa-house"></i>
-</a>
+  <a href="#" class="ingredient-card group" data-id="${this.strIngredient}" data-type="ingredient">
+    <div class="bg-gradient-to-br from-purple-500 to-indigo-800 dark:from-purple-700 dark:to-indigo-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+      <div class="p-4 flex flex-col items-center">
+        <div class="w-20 h-20 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mb-3 group-hover:animate-bounce">
+          <i class="fas fa-pepper-hot text-3xl text-green-500 dark:text-green-500"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white dark:text-white text-center mb-2">${this.strIngredient}</h3>
+        <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-white bg-green-300 rounded-full group-hover:bg-green-600 transition-colors duration-300">
+          Explore
+          <i class="fas fa-chevron-right ml-1 group-hover:translate-x-1 transition-transform duration-300"></i>
+        </span>
+      </div>
+    </div>
+  </a>
     `;
   }
 }
@@ -286,53 +448,56 @@ class Contact {
 
   render() {
     return `
-    <div class="container mx-auto">
-      <div class="py-5 grid gap-4" id="rowData">
-        <div class="contact min-h-screen flex justify-center items-center">
-          <div class="container w-3/4 text-center">
-            <div class="grid gap-4 md:grid-cols-2">
-              <div>
-                <input id="nameInput" onkeyup="inputsValidation()" type="text" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Name">
-                <div id="nameAlert" class="alert w-full mt-2 hidden text-red-600">
-                  Special characters and numbers not allowed
-                </div>
-              </div>
-              <div>
-                <input id="emailInput" onkeyup="inputsValidation()" type="email" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Email">
-                <div id="emailAlert" class="alert w-full mt-2 hidden text-red-600">
-                  Email not valid *exemple@yyy.zzz
-                </div>
-              </div>
-              <div>
-                <input id="phoneInput" onkeyup="inputsValidation()" type="text" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Phone">
-                <div id="phoneAlert" class="alert w-full mt-2 hidden text-red-600">
-                  Enter valid Phone Number
-                </div>
-              </div>
-              <div>
-                <input id="ageInput" onkeyup="inputsValidation()" type="number" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Age">
-                <div id="ageAlert" class="alert w-full mt-2 hidden text-red-600">
-                  Enter valid age
-                </div>
-              </div>
-              <div>
-                <input id="passwordInput" onkeyup="inputsValidation()" type="password" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Enter Your Password">
-                <div id="passwordAlert" class="alert w-full mt-2 hidden text-red-600">
-                  Enter valid password *Minimum eight characters, at least one letter and one number:*
-                </div>
-              </div>
-              <div>
-                <input id="repasswordInput" onkeyup="inputsValidation()" type="password" class="form-control placeholder-gray-400 border border-gray-300 rounded p-2" placeholder="Repassword">
-                <div id="repasswordAlert" class="alert w-full mt-2 hidden text-red-600">
-                  Enter valid repassword 
-                </div>
-              </div>
-            </div>
-            <button id="submitBtn" disabled class="btn btn-outline-danger border border-red-600 text-red-600 px-2 mt-3 hover:bg-red-600 hover:text-white">Submit</button>
+ <div class="min-h-screen p-8 flex items-center justify-center">
+  <div class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+    <div class="p-8">
+      <h2 class="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500 mb-8">Get in Touch</h2>
+      <form id="contactForm" class="space-y-6">
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+          <div class="form-group">
+            <label for="nameInput" class="block mb-2 text-sm font-medium text-gray-300 dark:text-white">Your Name</label>
+            <input type="text" id="nameInput" class="input-field " placeholder="John Doe" required>
+            <p id="nameAlert" class="error-message text-gray-300 text-sm">Special characters and numbers not allowed</p>
+          </div>
+          <div class="form-group">
+            <label for="emailInput" class="block mb-2 text-sm font-medium text-gray-300 dark:text-white">Your Email</label>
+            <input type="email" id="emailInput" class="input-field" placeholder="name@example.com" required>
+            <p id="emailAlert" class="error-message text-gray-300">Email not valid *exemple@yyy.zzz</p>
+          </div>
+          <div class="form-group">
+            <label for="phoneInput" class="block mb-2 text-sm font-medium text-gray-300 dark:text-white">Your Phone</label>
+            <input type="tel" id="phoneInput" class="input-field" placeholder="123-45-678" required>
+            <p id="phoneAlert" class="error-message text-gray-300">Enter valid Phone Number</p>
+          </div>
+          <div class="form-group">
+            <label for="ageInput" class="block mb-2 text-sm font-medium text-gray-300 dark:text-white">Your Age</label>
+            <input type="number" id="ageInput" class="input-field" placeholder="25" required>
+            <p id="ageAlert" class="error-message text-gray-300">Enter valid age</p>
+          </div>
+          <div class="form-group">
+            <label for="passwordInput" class="block mb-2 text-sm font-medium text-gray-300 dark:text-white">Your Password</label>
+            <input type="password" id="passwordInput" class="input-field" required>
+            <p id="passwordAlert" class="error-message text-gray-300">Enter valid password *Minimum eight characters, at least one letter and one number:*</p>
+          </div>
+          <div class="form-group">
+            <label for="repasswordInput" class="block mb-2 text-sm font-medium text-gray-300 dark:text-white">Confirm Password</label>
+            <input type="password" id="repasswordInput" class="input-field" required>
+            <p id="repasswordAlert" class="error-message text-gray-300">Enter valid repassword</p>
           </div>
         </div>
-      </div>
+        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-3 px-6 rounded-lg transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <span class="flex items-center justify-center">
+            <span class="mr-2">Submit</span>
+            <svg class="w-5 h-5 animate-spin hidden" id="loadingIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+        </button>
+      </form>
     </div>
+  </div>
+</div>
     `;
   }
 
@@ -584,15 +749,135 @@ Object.entries(buttonActions).forEach(([id, action]) => {
   document.getElementById(id).addEventListener("click", action);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  const contactLink = document.getElementById('contact');
+document.addEventListener("DOMContentLoaded", function () {
+  const contactLink = document.getElementById("contact");
   if (contactLink) {
-    contactLink.addEventListener('click', function(event) {
+    contactLink.addEventListener("click", function (event) {
       event.preventDefault();
       const contact = new Contact();
       contact.display();
     });
   }
+});
+
+// contact
+document.addEventListener("DOMContentLoaded", (event) => {
+  const form = document.getElementById("contactForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const loadingIcon = document.getElementById("loadingIcon");
+  const inputs = form.querySelectorAll("input");
+  const alerts = form.querySelectorAll('[id$="Alert"]');
+
+  // GSAP animations
+  gsap.from("form .form-group", {
+    duration: 1,
+    y: 20,
+    opacity: 0,
+    stagger: 0.1,
+    ease: "power3.out",
+  });
+
+  function validateInput(input) {
+    const inputId = input.id;
+    const alertId = inputId.replace("Input", "Alert");
+    const alertElement = document.getElementById(alertId);
+
+    let isValid = true;
+
+    switch (inputId) {
+      case "nameInput":
+        isValid = /^[a-zA-Z\s]+$/.test(input.value);
+        break;
+      case "emailInput":
+        isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+        break;
+      case "phoneInput":
+        isValid = /^\d{3}-\d{2}-\d{3}$/.test(input.value);
+        break;
+      case "ageInput":
+        isValid = input.value > 0 && input.value < 120;
+        break;
+      case "passwordInput":
+        isValid = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(input.value);
+        break;
+      case "repasswordInput":
+        isValid =
+          input.value === document.getElementById("passwordInput").value;
+        break;
+    }
+
+    if (isValid) {
+      gsap.to(alertElement, {
+        duration: 0.3,
+        opacity: 0,
+        height: 0,
+        onComplete: () => alertElement.classList.add("hidden"),
+      });
+      gsap.to(input, {
+        duration: 0.3,
+        borderColor: "#10B981",
+        backgroundColor: "#D1FAE5",
+      });
+    } else {
+      alertElement.classList.remove("hidden");
+      gsap.to(alertElement, { duration: 0.3, opacity: 1, height: "auto" });
+      gsap.to(input, {
+        duration: 0.3,
+        borderColor: "#EF4444",
+        backgroundColor: "#FEE2E2",
+      });
+    }
+
+    return isValid;
+  }
+
+  function validateForm() {
+    let isFormValid = true;
+    inputs.forEach((input) => {
+      if (!validateInput(input)) {
+        isFormValid = false;
+      }
+    });
+    submitBtn.disabled = !isFormValid;
+    if (isFormValid) {
+      gsap.to(submitBtn, { duration: 0.3, scale: 1.05, repeat: 1, yoyo: true });
+    }
+  }
+
+  inputs.forEach((input) => {
+    input.addEventListener("input", validateForm);
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (submitBtn.disabled) return;
+
+    loadingIcon.classList.remove("hidden");
+    gsap.to(loadingIcon, {
+      duration: 0.3,
+      opacity: 1,
+      rotation: 360,
+      repeat: -1,
+      ease: "linear",
+    });
+
+    // Simulating form submission
+    setTimeout(() => {
+      loadingIcon.classList.add("hidden");
+      gsap.to(loadingIcon, { duration: 0.3, opacity: 0, rotation: 0 });
+      alert("Form submitted successfully!");
+      form.reset();
+      alerts.forEach((alert) => alert.classList.add("hidden"));
+      inputs.forEach((input) =>
+        gsap.to(input, {
+          duration: 0.3,
+          borderColor: "#D1D5DB",
+          backgroundColor: "#F9FAFB",
+        })
+      );
+      submitBtn.disabled = true;
+    }, 2000);
+  });
 });
 
 getRandomMeals();
