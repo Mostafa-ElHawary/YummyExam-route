@@ -38,7 +38,8 @@
       }
     </style>
   </head>
-  <body>
+  <body style="background-color: rgb(51, 51, 51);
+;">
     <!-- Start Hero -->
 
     <section style="height: 100vh" class="Hero">
@@ -47,7 +48,7 @@
         <div class="menu-stripes"></div>
         <div class="menu-stripes"></div>
       </button>
-      <section id="sidebar" class="sidebar">
+      <section id="sidebar" class="sidebar relative">
         <nav class="menu pt-24">
           <ul class="menu-level1 list-none">
             <li>
@@ -84,11 +85,27 @@
             </li>
           </ul>
         </nav>
+
+        <div class="nav-footer flex flex-col bottom-0 absolute w-full pb-10">
+          <div class="icons flex space-x-4 justify-center">
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-twitter"></i>
+            <i class="fa-solid fa-globe"></i>
+          </div>
+          <div class="footer mt-4 text-center">
+            <p class="text-sm">
+              Copyright © 2019 All Rights
+              <br>
+              Reserved.
+            </p>
+          </div>
+        </div>
+        
       </section>
 
       <div id="content" class="h-full">
         <div
-          class="bg-green-500 flex flex-wrap py-5 mx-auto max-w-screen-lg card"
+          class=" flex flex-wrap py-5 mx-auto max-w-screen-lg card justify-center gap-2"
         ></div>
       </div>
     </section>

@@ -128,17 +128,17 @@ class MainCard {
 
   renderElement() {
     const a = document.createElement("a");
-    a.className = "w-full md:w-1/4 bg-black p-3 card";
+    a.className = "w-full md:w-1/4 m-1 p-2 bg-white rounded-md card  ";
     a.dataset.id = this.idMeal;
     a.href = "#";
 
     const img = document.createElement("img");
     img.src = this.strMealThumb;
     img.alt = this.strTags ?? "";
-    img.className = "w-full";
+    img.className = "w-full mb-2 rounded-md";
 
     const p = document.createElement("p");
-    p.className = "text-white";
+    p.className = "text-black text-center font-semibold	";
     p.textContent = this.strMeal;
 
     a.appendChild(img);
@@ -222,9 +222,9 @@ class Category {
 
   render() {
     return `
-      <a class="w-full md:w-1/4 bg-black p-3 card" data-id="${this.idCategory}" data-type="category" href="#">
-        <img src="${this.strCategoryThumb}" alt="${this.strCategory}" class="w-full">
-        <p class='text-white'>${this.strCategory}</p>
+      <a class="w-full md:w-1/4  m-1 p-2 bg-white rounded-md  card  " data-id="${this.idCategory}" data-type="category" href="#">
+        <img src="${this.strCategoryThumb}" alt="${this.strCategory}" class="w-full  mb-2 rounded-md	">
+        <p class='text-black text-center font-semibold'>${this.strCategory}</p>
       </a>
     `;
   }
@@ -237,13 +237,13 @@ class CategoryMeals {
 
   render() {
     return `
-      <a class="w-full md:w-1/4 bg-black p-3 card" data-id="${
+      <a class="w-full md:w-1/4 bg-white m-1 rounded-md p-2 card" data-id="${
         this.idMeal
       }" href="#">
         <img src="${this.strMealThumb}" alt="${
       this.strMeal ?? ""
-    }" class="w-full">
-        <p class='text-white'>${this.strMeal}</p>
+    }" class="w-full mb-2 rounded-md">
+        <p class=' text-black text-center font-semibold'>${this.strMeal}</p>
       </a>
     `;
   }
@@ -255,10 +255,14 @@ class AreaCard {
   }
   render() {
     return `
-        <a class="w-full md:w-1/4 bg-black p-3 card" data-id="${this.strArea}" data-type="area" href="#">
-        <p class='text-white'>${this.strArea}</p>
-        <i class="fa-solid fa-house"></i>
-      </a>
+
+   
+    <a class="w-full md:w-1/4  p-2 card text-center"href="#" data-id="${this.strArea}"  data-type="area" >
+    <i class="fa-solid fa-house text-white text-5xl		pb-2"></i>
+    <p class='text-white w-full text-2xl'>${this.strArea}</p>
+    </a>
+   
+     
     `;
   }
 }
@@ -269,7 +273,7 @@ class CardIngredients {
   }
   render() {
     return `
-  <a class="w-full md:w-1/4 bg-black p-3 card" data-id="${this.strIngredient}" data-type="ingredient" href="#">
+  <a class="w-full md:w-1/4 bg-red p-2 card" data-id="${this.strIngredient}" data-type="ingredient" href="#">
   <h1 class='text-white'>${this.strIngredient}</h1>
   <i class="fa-solid fa-house"></i>
 </a>
