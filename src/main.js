@@ -138,6 +138,13 @@ const fetchData = async (url) => {
     return data;
   } catch (error) {
     console.error(`Fetch error: ${error}`);
+    if (error.name === 'TypeError') {
+      createToast('Network error. Please check your internet connection.');
+    } else if (error.name === 'SyntaxError') {
+      createToast('Received invalid data from the server. Please try again later.');
+    } else {
+      createToast(`An error occurred: ${error.message}`);
+    }
     throw error;
   }
 };
@@ -169,6 +176,29 @@ const memoizedFetchData = memoize(fetchData);
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getRandomDelay = () => Math.floor(Math.random() * 501) + 1000;
+
+const createToast = (message, type = 'error') => {
+  const toast = document.createElement('div');
+  toast.className = `fixed bottom-4 right-4 p-4 rounded-md text-white ${
+    type === 'error' ? 'bg-red-500' : 'bg-green-500'
+  } transition-opacity duration-300 opacity-0`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  // Fade in
+  setTimeout(() => {
+    toast.classList.remove('opacity-0');
+  }, 10);
+
+  // Fade out and remove
+  setTimeout(() => {
+    toast.classList.add('opacity-0');
+    toast.addEventListener('transitionend', () => {
+      toast.remove();
+    });
+  }, 5000);
+};
+
 
 class Search {
   constructor({ onSearchByName, onSearchByFLetter }) {
