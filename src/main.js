@@ -558,10 +558,17 @@ class Contact {
   }
 }
 
+// const container = document.querySelector("#content .card");
+// const loader = document.createElement("div");
+// loader.className = "loader hidden";
+// container.parentNode.insertBefore(loader, container);
+
 const container = document.querySelector("#content .card");
 const loader = document.createElement("div");
-loader.className = "loader hidden";
+loader.className = "loader hidden animate-spin rounded-full border-4 border-gray-300 border-t-4 border-blue-500 w-12 h-12 mx-auto my-5";
 container.parentNode.insertBefore(loader, container);
+
+
 
 const debounce = (func, delay) => {
   let timeoutId;
