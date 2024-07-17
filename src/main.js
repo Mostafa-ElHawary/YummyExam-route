@@ -1,19 +1,16 @@
 //  <reference types="../@types/jquery"/>
 
-
-
 // sidenav
 
 // end sidenav
-document.addEventListener('DOMContentLoaded', () => {
-  const sidebarBtn = document.getElementById('sidebar-btn');
-  const sidebar = document.getElementById('sidebar');
+document.addEventListener("DOMContentLoaded", () => {
+  const sidebarBtn = document.getElementById("sidebar-btn");
+  const sidebar = document.getElementById("sidebar");
 
-  sidebarBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('-translate-x-full');
+  sidebarBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("-translate-x-full");
   });
 });
-
 
 // Hero start
 
@@ -136,7 +133,6 @@ const memoizedFetchData = memoize(fetchData);
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getRandomDelay = () => Math.floor(Math.random() * 501) + 1000;
 
-
 class Search {
   constructor({ onSearchByName, onSearchByFLetter }) {
     this.onSearchByName = onSearchByName;
@@ -146,22 +142,22 @@ class Search {
   handleSearchByName(event) {
     const query = event.target.value;
     if (query.length >= 3) {
-      this.fetchSearchResults(query, 'name');
+      this.fetchSearchResults(query, "name");
     }
   }
 
   handleSearchByFLetter(event) {
     const query = event.target.value;
     if (query.length === 1) {
-      this.fetchSearchResults(query, 'letter');
+      this.fetchSearchResults(query, "letter");
     }
   }
 
   async fetchSearchResults(query, type) {
     let url;
-    if (type === 'name') {
+    if (type === "name") {
       url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
-    } else if (type === 'letter') {
+    } else if (type === "letter") {
       url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${query}`;
     }
 
@@ -170,11 +166,12 @@ class Search {
       if (data && data.meals) {
         displayData(data.meals);
       } else {
-        container.innerHTML = '<p>No results found.</p>';
+        container.innerHTML = "<p>No results found.</p>";
       }
     } catch (error) {
-      console.error('Error fetching search results:', error);
-      container.innerHTML = '<p>An error occurred while searching. Please try again.</p>';
+      console.error("Error fetching search results:", error);
+      container.innerHTML =
+        "<p>An error occurred while searching. Please try again.</p>";
     }
   }
 
@@ -195,12 +192,14 @@ class Search {
 
   mount(container) {
     container.innerHTML = this.render();
-    container.querySelector('#searchByName').addEventListener('keyup', (event) => this.handleSearchByName(event));
-    container.querySelector('#searchByFLetter').addEventListener('keyup', (event) => this.handleSearchByFLetter(event));
+    container
+      .querySelector("#searchByName")
+      .addEventListener("keyup", (event) => this.handleSearchByName(event));
+    container
+      .querySelector("#searchByFLetter")
+      .addEventListener("keyup", (event) => this.handleSearchByFLetter(event));
   }
 }
-
-
 
 class MainCard {
   constructor({ idMeal, strMeal, strMealThumb, strTags }) {
@@ -246,14 +245,14 @@ class MainCard {
     a.appendChild(imgContainer);
     a.appendChild(p);
 
-    a.addEventListener('mouseenter', () => {
-      a.classList.add('animate__pulse');
+    a.addEventListener("mouseenter", () => {
+      a.classList.add("animate__pulse");
     });
-    a.addEventListener('mouseleave', () => {
-      a.classList.remove('animate__pulse');
+    a.addEventListener("mouseleave", () => {
+      a.classList.remove("animate__pulse");
     });
 
-    return a;    
+    return a;
   }
 }
 
@@ -678,13 +677,13 @@ const displayData = (meals) => {
     const card = new MainCard(meal);
     fragment.appendChild(card.renderElement());
   });
-  container.innerHTML = '';
+  container.innerHTML = "";
   container.appendChild(fragment);
 
-  const searchByName = document.getElementById('searchByName');
-  const searchByFLetter = document.getElementById('searchByFLetter');
-  if (searchByName) searchByName.value = '';
-  if (searchByFLetter) searchByFLetter.value = '';
+  const searchByName = document.getElementById("searchByName");
+  const searchByFLetter = document.getElementById("searchByFLetter");
+  if (searchByName) searchByName.value = "";
+  if (searchByFLetter) searchByFLetter.value = "";
 };
 
 const displayCategory = (categories) => {
@@ -817,21 +816,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-
-document.addEventListener('DOMContentLoaded', function() {
-  const searchNav = document.getElementById('searchNav');
-  const contentContainer = document.getElementById('content');
+document.addEventListener("DOMContentLoaded", function () {
+  const searchNav = document.getElementById("searchNav");
+  const contentContainer = document.getElementById("content");
   let search;
 
-  searchNav.addEventListener('click', function(event) {
+  searchNav.addEventListener("click", function (event) {
     event.preventDefault();
     if (!search) {
       search = new Search({});
     }
-    contentContainer.innerHTML = ''; 
+    contentContainer.innerHTML = "";
     search.mount(contentContainer);
   });
-
 });
 
 getRandomMeals();
