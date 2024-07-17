@@ -408,7 +408,7 @@ class Category {
        <img src="${this.strCategoryThumb}" alt="${this.strCategory}"
         class="w-full  mb-2 rounded-md"
         >
-        <p class='text-black text-center font-semibold'>${this.strCategory}</p>
+        <p class='text-white text-center font-semibold'>${this.strCategory}</p>
       </a>
    
    `;
