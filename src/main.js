@@ -1,5 +1,18 @@
 //  <reference types="../@types/jquery"/>
 
+
+
+// sidenav
+
+// end sidenav
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebarBtn = document.getElementById('sidebar-btn');
+  const sidebar = document.getElementById('sidebar');
+
+  sidebarBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+  });
+});
 // Hero start
 
 var sidebar = (function () {

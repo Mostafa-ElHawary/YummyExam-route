@@ -40,13 +40,14 @@
   </head>
   <body style="background-color: rgb(51, 51, 51)">
     <!-- Start Hero -->
-
+    <!-- 
     <section style="height: 100vh" class="Hero">
       <button id="sidebar-btn" class="sidebar-btn">
         <div class="menu-stripes"></div>
         <div class="menu-stripes"></div>
         <div class="menu-stripes"></div>
       </button>
+
       <section id="sidebar" class="sidebar relative">
         <nav class="menu pt-24">
           <ul class="menu-level1 list-none">
@@ -106,7 +107,95 @@
           class="flex flex-wrap py-5 mx-auto max-w-screen-lg card justify-center gap-2"
         ></div>
       </div>
+    </section> 
+    -->
+    <!-- +++++++++++++++++++++++++++++++ -->
+    <section style="height: 100vh" class="Hero">
+      <button id="sidebar-btn" class="sidebar-btn">
+        <div class="menu-stripes"></div>
+        <div class="menu-stripes"></div>
+        <div class="menu-stripes"></div>
+      </button>
+
+      <aside  id="sidebar" class="sidebar relative">
+        <nav class=" pt-24">
+          <ul class="space-y-2">
+            <li class="menu-item">
+              <a href="#" class="block px-8 py-3 hover:bg-purple-100 transition-colors duration-200 flex justify-between items-center" id="searchContainer">
+                <span class="font-semibold">Search</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="block px-8 py-3 hover:bg-purple-100 transition-colors duration-200 flex justify-between items-center" id="loadCategories">
+                <span class="font-semibold">Categories</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="block px-8 py-3 hover:bg-purple-100 transition-colors duration-200 flex justify-between items-center" id="loadAreas">
+                <span class="font-semibold">Area</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="block px-8 py-3 hover:bg-purple-100 transition-colors duration-200 flex justify-between items-center" id="loadIngredients">
+                <span class="font-semibold">Ingredients</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                </svg>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="block px-8 py-3 hover:bg-purple-100 transition-colors duration-200 flex justify-between items-center" id="contact">
+                <span class="font-semibold">Contact Us</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="absolute bottom-0 w-full pb-8 bg-purple-100">
+          <div class="flex justify-center space-x-4 mb-4">
+            <a href="#" class="text-purple-600 hover:text-purple-800 transition-colors duration-200">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-purple-600 hover:text-purple-800 transition-colors duration-200">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-purple-600 hover:text-purple-800 transition-colors duration-200">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+              </svg>
+            </a>
+          </div>
+          <div class="text-center text-sm text-purple-800">
+            <p>Copyright © 2019 All Rights<br>Reserved.</p>
+          </div>
+        </div>
+      </aside>
+
+      <main id="content" class="min-h-screen p-8">
+        <div
+          class="flex flex-wrap py-5 mx-auto max-w-screen-lg card justify-center gap-2"
+        >
+      </div>
+      </main>
+
     </section>
+
     <!-- End Hero -->
 
     <!-- contact -->
