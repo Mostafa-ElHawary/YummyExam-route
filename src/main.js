@@ -93,7 +93,31 @@ $(document).ready(function () {
 // end sideNav animation
 // +++++++++++++++++++++++++++++++++++++++++++++++
 
-const CACHE_EXPIRATION = 5 * 60 * 1000;
+// const CACHE_EXPIRATION = 5 * 60 * 1000;
+// const cache = new Map();
+
+// const fetchData = async (url) => {
+//   const now = Date.now();
+//   if (cache.has(url)) {
+//     const { data, timestamp } = cache.get(url);
+//     if (now - timestamp < CACHE_EXPIRATION) {
+//       return data;
+//     }
+//   }
+//   try {
+//     const response = await fetch(url);
+//     if (!response.ok)
+//       throw new Error(`Network response was not ok: ${response.statusText}`);
+//     const data = await response.json();
+//     cache.set(url, { data, timestamp: now });
+//     return data;
+//   } catch (error) {
+//     console.error(`Fetch error: ${error}`);
+//     throw error;
+//   }
+// };
+
+const CACHE_EXPIRATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 const cache = new Map();
 
 const fetchData = async (url) => {
@@ -104,6 +128,7 @@ const fetchData = async (url) => {
       return data;
     }
   }
+
   try {
     const response = await fetch(url);
     if (!response.ok)
@@ -116,6 +141,18 @@ const fetchData = async (url) => {
     throw error;
   }
 };
+//  function to clean up expired cache entries periodically
+const cleanCache = () => {
+  const now = Date.now();
+  for (const [url, { timestamp }] of cache) {
+    if (now - timestamp > CACHE_EXPIRATION) {
+      cache.delete(url);
+    }
+  }
+};
+
+// Run cleanCache every 10 minutes
+setInterval(cleanCache, 10 * 60 * 1000);
 
 const memoize = (fn) => {
   const cache = new Map();
@@ -137,6 +174,10 @@ class Search {
   constructor({ onSearchByName, onSearchByFLetter }) {
     this.onSearchByName = onSearchByName;
     this.onSearchByFLetter = onSearchByFLetter;
+    
+    // Debounce the search methods
+    this.debouncedSearchByName = debounce(this.handleSearchByName.bind(this), 300);
+    this.debouncedSearchByFLetter = debounce(this.handleSearchByFLetter.bind(this), 300);
   }
 
   handleSearchByName(event) {
@@ -170,8 +211,7 @@ class Search {
       }
     } catch (error) {
       console.error("Error fetching search results:", error);
-      container.innerHTML =
-        "<p>An error occurred while searching. Please try again.</p>";
+      container.innerHTML = "<p>An error occurred while searching. Please try again.</p>";
     }
   }
 
@@ -194,12 +234,67 @@ class Search {
     container.innerHTML = this.render();
     container
       .querySelector("#searchByName")
-      .addEventListener("keyup", (event) => this.handleSearchByName(event));
+      .addEventListener("keyup", (event) => this.debouncedSearchByName(event));
     container
       .querySelector("#searchByFLetter")
-      .addEventListener("keyup", (event) => this.handleSearchByFLetter(event));
+      .addEventListener("keyup", (event) => this.debouncedSearchByFLetter(event));
   }
 }
+
+// class MainCard {
+//   constructor({ idMeal, strMeal, strMealThumb, strTags }) {
+//     Object.assign(this, { idMeal, strMeal, strMealThumb, strTags });
+//   }
+
+//   renderElement() {
+//     const a = document.createElement("a");
+//     a.className = `
+//       group
+//       w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5
+//       p-2 m-1
+//       bg-white rounded-xl shadow-md 
+//       transform transition duration-300 ease-in-out 
+//       hover:shadow-xl hover:scale-105 
+//       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+//       animate__animated animate__fadeIn animate__faster
+//     `;
+//     a.dataset.id = this.idMeal;
+//     a.href = "#";
+
+//     const imgContainer = document.createElement("div");
+//     imgContainer.className = "overflow-hidden rounded-lg";
+
+//     const img = document.createElement("img");
+//     img.src = this.strMealThumb;
+//     img.alt = this.strTags ?? "";
+//     img.className = `
+//       w-full h-48 object-cover
+//       transform transition duration-300 ease-in-out
+//       group-hover:scale-110 group-hover:rotate-2
+//     `;
+//     imgContainer.appendChild(img);
+
+//     const p = document.createElement("p");
+//     p.className = `
+//       mt-2 text-gray-800 text-center font-semibold truncate
+//       transform transition duration-300 ease-in-out
+//       group-hover:text-indigo-600
+//     `;
+//     p.textContent = this.strMeal;
+
+//     a.appendChild(imgContainer);
+//     a.appendChild(p);
+
+//     a.addEventListener("mouseenter", () => {
+//       a.classList.add("animate__pulse");
+//     });
+//     a.addEventListener("mouseleave", () => {
+//       a.classList.remove("animate__pulse");
+//     });
+
+//     return a;
+//   }
+// }
 
 class MainCard {
   constructor({ idMeal, strMeal, strMealThumb, strTags }) {
@@ -207,7 +302,7 @@ class MainCard {
   }
 
   renderElement() {
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.className = `
       group
       w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5
@@ -219,14 +314,14 @@ class MainCard {
       animate__animated animate__fadeIn animate__faster
     `;
     a.dataset.id = this.idMeal;
-    a.href = "#";
+    a.href = '#';
 
-    const imgContainer = document.createElement("div");
-    imgContainer.className = "overflow-hidden rounded-lg";
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'overflow-hidden rounded-lg';
 
-    const img = document.createElement("img");
-    img.src = this.strMealThumb;
-    img.alt = this.strTags ?? "";
+    const img = document.createElement('img');
+    img.dataset.src = this.strMealThumb; // Use data-src instead of src
+    img.alt = this.strTags ?? '';
     img.className = `
       w-full h-48 object-cover
       transform transition duration-300 ease-in-out
@@ -234,7 +329,7 @@ class MainCard {
     `;
     imgContainer.appendChild(img);
 
-    const p = document.createElement("p");
+    const p = document.createElement('p');
     p.className = `
       mt-2 text-gray-800 text-center font-semibold truncate
       transform transition duration-300 ease-in-out
@@ -245,17 +340,9 @@ class MainCard {
     a.appendChild(imgContainer);
     a.appendChild(p);
 
-    a.addEventListener("mouseenter", () => {
-      a.classList.add("animate__pulse");
-    });
-    a.addEventListener("mouseleave", () => {
-      a.classList.remove("animate__pulse");
-    });
-
     return a;
   }
 }
-
 class MainCardDetails {
   constructor({
     idMeal,
@@ -558,17 +645,11 @@ class Contact {
   }
 }
 
-// const container = document.querySelector("#content .card");
-// const loader = document.createElement("div");
-// loader.className = "loader hidden";
-// container.parentNode.insertBefore(loader, container);
-
 const container = document.querySelector("#content .card");
 const loader = document.createElement("div");
-loader.className = "loader hidden animate-spin rounded-full border-4 border-gray-300 border-t-4 border-blue-500 w-12 h-12 mx-auto my-5";
+loader.className =
+  "loader hidden animate-spin rounded-full border-4 border-gray-300 border-t-4 border-blue-500 w-12 h-12 mx-auto my-5";
 container.parentNode.insertBefore(loader, container);
-
-
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -592,6 +673,17 @@ const smoothHideLoader = () => {
   });
 };
 
+const showLoader = () => {
+  loader.classList.remove("hidden");
+  container.classList.add("hidden");
+  loader.style.animationDuration = `${(Math.random() * 1.5 + 0.5).toFixed(2)}s`;
+};
+
+const hideLoader = () => {
+  loader.classList.add("hidden");
+  container.classList.remove("hidden");
+};
+
 const lazyLoadImages = () => {
   const images = document.querySelectorAll("img[data-src]");
   const observer = new IntersectionObserver((entries) => {
@@ -607,16 +699,6 @@ const lazyLoadImages = () => {
   images.forEach((img) => observer.observe(img));
 };
 
-const showLoader = () => {
-  loader.classList.remove("hidden");
-  container.classList.add("hidden");
-  loader.style.animationDuration = `${(Math.random() * 1.5 + 0.5).toFixed(2)}s`;
-};
-
-const hideLoader = () => {
-  loader.classList.add("hidden");
-  container.classList.remove("hidden");
-};
 
 const displayContent = async (fetchPromise, displayFunction) => {
   try {
@@ -678,37 +760,74 @@ const getIngredients = () =>
     displayIngredients
   );
 
+// const displayData = (meals) => {
+//   const fragment = document.createDocumentFragment();
+//   meals.forEach((meal) => {
+//     const card = new MainCard(meal);
+//     fragment.appendChild(card.renderElement());
+//   });
+//   container.innerHTML = "";
+//   container.appendChild(fragment);
+
+//   const searchByName = document.getElementById("searchByName");
+//   const searchByFLetter = document.getElementById("searchByFLetter");
+//   if (searchByName) searchByName.value = "";
+//   if (searchByFLetter) searchByFLetter.value = "";
+// };
+
 const displayData = (meals) => {
   const fragment = document.createDocumentFragment();
   meals.forEach((meal) => {
     const card = new MainCard(meal);
     fragment.appendChild(card.renderElement());
   });
-  container.innerHTML = "";
+  container.innerHTML = '';
   container.appendChild(fragment);
 
-  const searchByName = document.getElementById("searchByName");
-  const searchByFLetter = document.getElementById("searchByFLetter");
-  if (searchByName) searchByName.value = "";
-  if (searchByFLetter) searchByFLetter.value = "";
+  lazyLoadImages(); // Call this after adding new content
+
+  const searchByName = document.getElementById('searchByName');
+  const searchByFLetter = document.getElementById('searchByFLetter');
+  if (searchByName) searchByName.value = '';
+  if (searchByFLetter) searchByFLetter.value = '';
 };
+
+// const displayCategory = (categories) => {
+//   container.innerHTML = categories
+//     .map((category) => new Category(category).render())
+//     .join("");
+// };
 
 const displayCategory = (categories) => {
   container.innerHTML = categories
     .map((category) => new Category(category).render())
-    .join("");
+    .join('');
+  lazyLoadImages();
 };
 
+// const displayArea = (areas) => {
+//   container.innerHTML = areas
+//     .map((area) => new AreaCard(area).render())
+//     .join("");
+// };
 const displayArea = (areas) => {
   container.innerHTML = areas
     .map((area) => new AreaCard(area).render())
-    .join("");
+    .join('');
+  lazyLoadImages();
 };
+
+// const displayIngredients = (ingredients) => {
+//   container.innerHTML = ingredients
+//     .map((ingredient) => new CardIngredients(ingredient).render())
+//     .join("");
+// };
 
 const displayIngredients = (ingredients) => {
   container.innerHTML = ingredients
     .map((ingredient) => new CardIngredients(ingredient).render())
-    .join("");
+    .join('');
+  lazyLoadImages();
 };
 
 const displayMealDetails = async (idMeal) => {
@@ -836,6 +955,11 @@ document.addEventListener("DOMContentLoaded", function () {
     contentContainer.innerHTML = "";
     search.mount(contentContainer);
   });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  getRandomMeals();
+  lazyLoadImages();
 });
 
 getRandomMeals();
