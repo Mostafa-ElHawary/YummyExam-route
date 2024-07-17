@@ -206,6 +206,276 @@ class BaseCard {
   }
 }
 
+// class Search {
+//   constructor() {
+//     this.debouncedSearchByName = debounce(this.handleSearchByName.bind(this), 300);
+//     this.debouncedSearchByFLetter = debounce(this.handleSearchByFLetter.bind(this), 300);
+//   }
+
+//   handleSearchByName(event) {
+//     const query = event.target.value.trim();
+//     if (query.length >= 3) {
+//       this.fetchSearchResults(query, "name");
+//     } else {
+//       this.clearResults();
+//     }
+//   }
+
+//   handleSearchByFLetter(event) {
+//     const query = event.target.value.trim();
+//     if (query.length === 1) {
+//       this.fetchSearchResults(query, "letter");
+//     } else {
+//       this.clearResults();
+//     }
+//   }
+
+//   async fetchSearchResults(query, type) {
+//     const url = type === "name" 
+//       ? `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
+//       : `https://www.themealdb.com/api/json/v1/1/search.php?f=${query}`;
+
+//     try {
+//       const data = await fetchData(url);
+//       this.displaySearchResults(data?.meals || []);
+//     } catch (error) {
+//       console.error("Error fetching search results:", error);
+//       this.displayError();
+//     }
+//   }
+
+//   displaySearchResults(meals) {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     if (meals.length === 0) {
+//       this.displayNoResults();
+//       return;
+//     }
+
+//     resultsContainer.innerHTML = meals.map(meal => `
+//       <div class="meal-card animate__animated animate__fadeIn">
+//         ${new MainCard(meal).renderElement().outerHTML}
+//       </div>
+//     `).join('');
+//   }
+
+//   displayNoResults() {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     resultsContainer.innerHTML = `
+//       <p class="text-center text-gray-500 my-8 animate__animated animate__fadeIn">
+//         No results found. Try a different search term.
+//       </p>
+//     `;
+//     createToast("No meals found matching your search.", "info");
+//   }
+
+//   displayError() {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     resultsContainer.innerHTML = `
+//       <p class="text-center text-red-500 my-8 animate__animated animate__fadeIn">
+//         An error occurred while searching. Please try again.
+//       </p>
+//     `;
+//     createToast("Error while searching. Please try again later.");
+//   }
+
+//   clearResults() {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     resultsContainer.innerHTML = '';
+//   }
+
+//   render() {
+//     return `
+//       <div class="container mx-auto px-4 py-8 animate__animated animate__fadeIn" id="searchContainer">
+//         <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+//           <div class="flex-1">
+//             <input id="searchByName" 
+//               class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" 
+//               type="text" 
+//               placeholder="Search By Name">
+//           </div>
+//           <div class="flex-1">
+//             <input id="searchByFLetter" 
+//               maxlength="1" 
+//               class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" 
+//               type="text" 
+//               placeholder="Search By First Letter">
+//           </div>
+//         </div>
+//         <div class="SearchResult mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+//         </div>
+//       </div>
+//     `;
+//   }
+
+//   mount(container) {
+//     container.innerHTML = this.render();
+    
+//     const searchByName = container.querySelector("#searchByName");
+//     const searchByFLetter = container.querySelector("#searchByFLetter");
+    
+//     searchByName.addEventListener("input", this.debouncedSearchByName);
+//     searchByFLetter.addEventListener("input", this.debouncedSearchByFLetter);
+
+//     [searchByName, searchByFLetter].forEach(input => {
+//       input.addEventListener('focus', () => {
+//         input.classList.add('animate__animated', 'animate__pulse');
+//       });
+//       input.addEventListener('blur', () => {
+//         input.classList.remove('animate__animated', 'animate__pulse');
+//       });
+//     });
+//   }
+// }
+
+// class Search {
+//   constructor() {
+//     this.debouncedSearchByName = debounce(this.handleSearchByName.bind(this), 300);
+//     this.debouncedSearchByFLetter = debounce(this.handleSearchByFLetter.bind(this), 300);
+//   }
+
+//   handleSearchByName(event) {
+//     const query = event.target.value.trim();
+//     if (query.length >= 3) {
+//       this.fetchSearchResults(query, "name");
+//     } else {
+//       this.clearResults();
+//     }
+//   }
+
+//   handleSearchByFLetter(event) {
+//     const query = event.target.value.trim();
+//     if (query.length === 1) {
+//       this.fetchSearchResults(query, "letter");
+//     } else {
+//       this.clearResults();
+//     }
+//   }
+
+//   async fetchSearchResults(query, type) {
+//     const url = type === "name" 
+//       ? `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
+//       : `https://www.themealdb.com/api/json/v1/1/search.php?f=${query}`;
+
+//     try {
+//       const data = await fetchData(url);
+//       this.displaySearchResults(data?.meals || []);
+//     } catch (error) {
+//       console.error("Error fetching search results:", error);
+//       this.displayError();
+//     }
+//   }
+
+//   displaySearchResults(meals) {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     if (meals.length === 0) {
+//       this.displayNoResults();
+//       return;
+//     }
+
+//     resultsContainer.innerHTML = meals.map(meal => this.renderMealCard(meal)).join('');
+//   }
+
+//   renderMealCard(meal) {
+//     return `
+//       <div class="meal-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 animate__animated animate__fadeIn">
+//         <img src="${meal.strMealThumb}" alt="${meal.strMeal}" class="w-full h-48 object-cover">
+//         <div class="p-4">
+//           <h3 class="text-xl font-semibold text-white mb-2 truncate">${meal.strMeal}</h3>
+//           <p class="text-gray-400 text-sm mb-2">Category: ${meal.strCategory}</p>
+//           <p class="text-gray-400 text-sm mb-4">Area: ${meal.strArea}</p>
+//           <a href="#" data-id="${meal.idMeal}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-300">View Details</a>
+//         </div>
+//       </div>
+//     `;
+//   }
+
+//   displayNoResults() {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     resultsContainer.innerHTML = `
+//       <p class="text-center text-gray-500 my-8 animate__animated animate__fadeIn">
+//         No results found. Try a different search term.
+//       </p>
+//     `;
+//     createToast("No meals found matching your search.", "info");
+//   }
+
+//   displayError() {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     resultsContainer.innerHTML = `
+//       <p class="text-center text-red-500 my-8 animate__animated animate__fadeIn">
+//         An error occurred while searching. Please try again.
+//       </p>
+//     `;
+//     createToast("Error while searching. Please try again later.");
+//   }
+
+//   clearResults() {
+//     const resultsContainer = document.querySelector('.SearchResult');
+//     resultsContainer.innerHTML = '';
+//   }
+
+//   render() {
+//     return `
+//       <div class="container mx-auto px-4 py-8 animate__animated animate__fadeIn" id="searchContainer">
+//         <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+//           <div class="flex-1">
+//             <input id="searchByName" 
+//               class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" 
+//               type="text" 
+//               placeholder="Search By Name">
+//           </div>
+//           <div class="flex-1">
+//             <input id="searchByFLetter" 
+//               maxlength="1" 
+//               class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" 
+//               type="text" 
+//               placeholder="Search By First Letter">
+//           </div>
+//         </div>
+//         <div class="SearchResult mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+//         </div>
+//       </div>
+//     `;
+//   }
+
+//   mount(container) {
+//     container.innerHTML = this.render();
+    
+//     const searchByName = container.querySelector("#searchByName");
+//     const searchByFLetter = container.querySelector("#searchByFLetter");
+    
+//     searchByName.addEventListener("input", this.debouncedSearchByName);
+//     searchByFLetter.addEventListener("input", this.debouncedSearchByFLetter);
+
+//     // Add focus and blur event listeners for input animation
+//     [searchByName, searchByFLetter].forEach(input => {
+//       input.addEventListener('focus', () => {
+//         input.classList.add('animate__animated', 'animate__pulse');
+//       });
+//       input.addEventListener('blur', () => {
+//         input.classList.remove('animate__animated', 'animate__pulse');
+//       });
+//     });
+
+//     // Add event listener for meal card clicks
+//     container.addEventListener('click', (event) => {
+//       const mealCard = event.target.closest('a[data-id]');
+//       if (mealCard) {
+//         event.preventDefault();
+//         const mealId = mealCard.dataset.id;
+//         this.handleMealCardClick(mealId);
+//       }
+//     });
+//   }
+
+//   handleMealCardClick(mealId) {
+//     // Implement the logic to display meal details
+//     // This could involve fetching the meal details and updating the UI
+//     console.log(`Meal clicked: ${mealId}`);
+//     // For example: displayMealDetails(mealId);
+//   }
+// }
+
 class Search {
   constructor() {
     this.debouncedSearchByName = debounce(this.handleSearchByName.bind(this), 300);
@@ -251,11 +521,21 @@ class Search {
       return;
     }
 
-    resultsContainer.innerHTML = meals.map(meal => `
-      <div class="meal-card animate__animated animate__fadeIn">
-        ${new MainCard(meal).renderElement().outerHTML}
+    resultsContainer.innerHTML = meals.map(meal => this.renderMealCard(meal)).join('');
+  }
+
+  renderMealCard(meal) {
+    return `
+      <div class="meal-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 animate__animated animate__fadeIn">
+        <img src="${meal.strMealThumb}" alt="${meal.strMeal}" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-white mb-2 truncate">${meal.strMeal}</h3>
+          <p class="text-gray-400 text-sm mb-2">Category: ${meal.strCategory}</p>
+          <p class="text-gray-400 text-sm mb-4">Area: ${meal.strArea}</p>
+          <button data-id="${meal.idMeal}" class="view-details-btn inline-block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-300">View Details</button>
+        </div>
       </div>
-    `).join('');
+    `;
   }
 
   displayNoResults() {
@@ -286,7 +566,7 @@ class Search {
   render() {
     return `
       <div class="container mx-auto px-4 py-8 animate__animated animate__fadeIn" id="searchContainer">
-        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8">
           <div class="flex-1">
             <input id="searchByName" 
               class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out" 
@@ -301,7 +581,7 @@ class Search {
               placeholder="Search By First Letter">
           </div>
         </div>
-        <div class="SearchResult mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="SearchResult grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         </div>
       </div>
     `;
@@ -316,6 +596,7 @@ class Search {
     searchByName.addEventListener("input", this.debouncedSearchByName);
     searchByFLetter.addEventListener("input", this.debouncedSearchByFLetter);
 
+    // Add focus and blur event listeners for input animation
     [searchByName, searchByFLetter].forEach(input => {
       input.addEventListener('focus', () => {
         input.classList.add('animate__animated', 'animate__pulse');
@@ -324,6 +605,35 @@ class Search {
         input.classList.remove('animate__animated', 'animate__pulse');
       });
     });
+
+    // Add event listener for meal card clicks
+    container.addEventListener('click', (event) => {
+      const viewDetailsBtn = event.target.closest('.view-details-btn');
+      if (viewDetailsBtn) {
+        event.preventDefault();
+        const mealId = viewDetailsBtn.dataset.id;
+        this.handleMealCardClick(mealId);
+      }
+    });
+  }
+
+  async handleMealCardClick(mealId) {
+    try {
+      showLoader();
+      const data = await fetchData(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
+      if (data && data.meals && data.meals[0]) {
+        const mealDetails = new MainCardDetails(data.meals[0]);
+        const container = document.querySelector('.SearchResult');
+        container.innerHTML = mealDetails.render();
+      } else {
+        throw new Error("Meal details not found");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      createToast("Unable to load meal details. Please try again later.");
+    } finally {
+      hideLoader();
+    }
   }
 }
 
@@ -1113,6 +1423,25 @@ document.addEventListener("DOMContentLoaded", function () {
         contentContainer.scrollIntoView({ behavior: 'smooth' });
   });
 });
+
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   const searchNav = document.getElementById("searchContainer");
+//   const contentContainer = document.getElementById("content");
+//   let search;
+
+//   searchNav.addEventListener("click", function (event) {
+//     event.preventDefault();
+//     if (!search) {
+//       search = new search();
+//     }
+//     contentContainer.innerHTML = ""; // Clear existing content
+//     search.mount(contentContainer);
+
+//     // Scroll to the search container
+//     contentContainer.scrollIntoView({ behavior: 'smooth' });
+//   });
+// });
 
 document.addEventListener("DOMContentLoaded", () => {
   getRandomMeals();
