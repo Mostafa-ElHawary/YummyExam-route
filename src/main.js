@@ -199,6 +199,34 @@ const createToast = (message, type = 'error') => {
   }, 5000);
 };
 
+class BaseCard {
+  constructor(data) {
+    Object.assign(this, data);
+  }
+
+  createElementWithClass(tag, className) {
+    const element = document.createElement(tag);
+    element.className = className;
+    return element;
+  }
+
+  createImage(src, alt, className) {
+    const img = this.createElementWithClass('img', className);
+    img.src = src;
+    img.alt = alt || '';
+    return img;
+  }
+
+  createLink(href, className) {
+    const a = this.createElementWithClass('a', className);
+    a.href = href;
+    return a;
+  }
+
+  render() {
+    throw new Error('render method must be implemented');
+  }
+}
 
 class Search {
   constructor({ onSearchByName, onSearchByFLetter }) {
@@ -238,10 +266,12 @@ class Search {
         displayData(data.meals);
       } else {
         container.innerHTML = "<p>No results found.</p>";
+        createToast('No meals found matching your search.', 'info');
       }
     } catch (error) {
       console.error("Error fetching search results:", error);
       container.innerHTML = "<p>An error occurred while searching. Please try again.</p>";
+      createToast('Error while searching. Please try again later.');
     }
   }
 
@@ -262,12 +292,21 @@ class Search {
 
   mount(container) {
     container.innerHTML = this.render();
-    container
-      .querySelector("#searchByName")
-      .addEventListener("keyup", (event) => this.debouncedSearchByName(event));
-    container
-      .querySelector("#searchByFLetter")
-      .addEventListener("keyup", (event) => this.debouncedSearchByFLetter(event));
+
+    // container
+    //   .querySelector("#searchByName")
+    //   .addEventListener("keyup", (event) => this.debouncedSearchByName(event));
+    // container
+    //   .querySelector("#searchByFLetter")
+    //   .addEventListener("keyup", (event) => this.debouncedSearchByFLetter(event));
+
+    delegateEvent(container, 'keyup', '#searchByName', (event) => {
+      this.debouncedSearchByName(event);
+    });
+
+    delegateEvent(container, 'keyup', '#searchByFLetter', (event) => {
+      this.debouncedSearchByFLetter(event);
+    });
   }
 }
 
@@ -326,14 +365,57 @@ class Search {
 //   }
 // }
 
-class MainCard {
-  constructor({ idMeal, strMeal, strMealThumb, strTags }) {
-    Object.assign(this, { idMeal, strMeal, strMealThumb, strTags });
-  }
+// class MainCard {
+//   constructor({ idMeal, strMeal, strMealThumb, strTags }) {
+//     Object.assign(this, { idMeal, strMeal, strMealThumb, strTags });
+//   }
 
+//   renderElement() {
+//     const a = document.createElement('a');
+//     a.className = `
+//       group
+//       w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5
+//       p-2 m-1
+//       bg-white rounded-xl shadow-md 
+//       transform transition duration-300 ease-in-out 
+//       hover:shadow-xl hover:scale-105 
+//       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+//       animate__animated animate__fadeIn animate__faster
+//     `;
+//     a.dataset.id = this.idMeal;
+//     a.href = '#';
+
+//     const imgContainer = document.createElement('div');
+//     imgContainer.className = 'overflow-hidden rounded-lg';
+
+//     const img = document.createElement('img');
+//     img.dataset.src = this.strMealThumb; // Use data-src instead of src
+//     img.alt = this.strTags ?? '';
+//     img.className = `
+//       w-full h-48 object-cover
+//       transform transition duration-300 ease-in-out
+//       group-hover:scale-110 group-hover:rotate-2
+//     `;
+//     imgContainer.appendChild(img);
+
+//     const p = document.createElement('p');
+//     p.className = `
+//       mt-2 text-gray-800 text-center font-semibold truncate
+//       transform transition duration-300 ease-in-out
+//       group-hover:text-indigo-600
+//     `;
+//     p.textContent = this.strMeal;
+
+//     a.appendChild(imgContainer);
+//     a.appendChild(p);
+
+//     return a;
+//   }
+// }
+
+class MainCard extends BaseCard {
   renderElement() {
-    const a = document.createElement('a');
-    a.className = `
+    const a = this.createLink('#', `
       group
       w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5
       p-2 m-1
@@ -342,29 +424,22 @@ class MainCard {
       hover:shadow-xl hover:scale-105 
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
       animate__animated animate__fadeIn animate__faster
-    `;
+    `);
     a.dataset.id = this.idMeal;
-    a.href = '#';
 
-    const imgContainer = document.createElement('div');
-    imgContainer.className = 'overflow-hidden rounded-lg';
-
-    const img = document.createElement('img');
-    img.dataset.src = this.strMealThumb; // Use data-src instead of src
-    img.alt = this.strTags ?? '';
-    img.className = `
+    const imgContainer = this.createElementWithClass('div', 'overflow-hidden rounded-lg');
+    const img = this.createImage(this.strMealThumb, this.strTags || '', `
       w-full h-48 object-cover
       transform transition duration-300 ease-in-out
       group-hover:scale-110 group-hover:rotate-2
-    `;
+    `);
     imgContainer.appendChild(img);
 
-    const p = document.createElement('p');
-    p.className = `
+    const p = this.createElementWithClass('p', `
       mt-2 text-gray-800 text-center font-semibold truncate
       transform transition duration-300 ease-in-out
       group-hover:text-indigo-600
-    `;
+    `);
     p.textContent = this.strMeal;
 
     a.appendChild(imgContainer);
@@ -373,6 +448,7 @@ class MainCard {
     return a;
   }
 }
+
 class MainCardDetails {
   constructor({
     idMeal,
@@ -499,35 +575,56 @@ class MainCardDetails {
   }
 }
 
-class Category {
-  constructor({
-    idCategory,
-    strCategory,
-    strCategoryThumb,
-    strCategoryDescription,
-  }) {
-    Object.assign(this, {
-      idCategory,
-      strCategory,
-      strCategoryThumb,
-      strCategoryDescription,
-    });
-  }
+// class Category {
+//   constructor({
+//     idCategory,
+//     strCategory,
+//     strCategoryThumb,
+//     strCategoryDescription,
+//   }) {
+//     Object.assign(this, {
+//       idCategory,
+//       strCategory,
+//       strCategoryThumb,
+//       strCategoryDescription,
+//     });
+//   }
 
-  render() {
-    return `
+//   render() {
+//     return `
 
-      <a href="#" 
-     class="group block w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 transform transition duration-300 ease-in-out hover:scale-105"
-     data-id="${this.idCategory}" 
-     data-type="category">
-       <img src="${this.strCategoryThumb}" alt="${this.strCategory}"
-        class="w-full  mb-2 rounded-md"
-        >
-        <p class='text-white text-center font-semibold'>${this.strCategory}</p>
-      </a>
+//       <a href="#" 
+//      class="group block w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 transform transition duration-300 ease-in-out hover:scale-105"
+//      data-id="${this.idCategory}" 
+//      data-type="category">
+//        <img src="${this.strCategoryThumb}" alt="${this.strCategory}"
+//         class="w-full  mb-2 rounded-md"
+//         >
+//         <p class='text-white text-center font-semibold'>${this.strCategory}</p>
+//       </a>
    
-   `;
+//    `;
+//   }
+// }
+
+class Category extends BaseCard {
+  render() {
+    const a = this.createLink('#', `
+      group block w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 
+      transform transition duration-300 ease-in-out hover:scale-105
+    `);
+    a.dataset.id = this.idCategory;
+    a.dataset.type = 'category';
+
+    const img = this.createImage(this.strCategoryThumb, this.strCategory, 'w-full mb-2 rounded-md');
+    
+    const p = this.createElementWithClass('p', 'text-white text-center font-semibold');
+    p.textContent = this.strCategory;
+
+    a.appendChild(img);
+    a.appendChild(p);
+
+    return a.outerHTML;
   }
 }
 
@@ -564,50 +661,133 @@ class CategoryMeals {
   }
 }
 
-class AreaCard {
-  constructor({ strArea }) {
-    this.strArea = strArea;
-  }
-  render() {
-    return `
+// class AreaCard {
+//   constructor({ strArea }) {
+//     this.strArea = strArea;
+//   }
+//   render() {
+//     return `
 
    
-  <a href="#" class="area-card relative overflow-hidden w-full md:w-1/4 h-48 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105" data-id="${this.strArea}" data-type="area">
-  <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-800 opacity-75"></div>
-  <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-white z-10">
-    <i class="fa-solid fa-globe text-4xl mb-3 animate-bounce"></i>
-    <h3 class="text-2xl font-bold mb-2">${this.strArea}</h3>
-    <p class="text-sm opacity-0 transform translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">Discover flavors</p>
-  </div>
-  <div class="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 hover:opacity-20"></div>
-</a>
+//   <a href="#" class="area-card relative overflow-hidden w-full md:w-1/4 h-48 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105" data-id="${this.strArea}" data-type="area">
+//   <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-800 opacity-75"></div>
+//   <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-white z-10">
+//     <i class="fa-solid fa-globe text-4xl mb-3 animate-bounce"></i>
+//     <h3 class="text-2xl font-bold mb-2">${this.strArea}</h3>
+//     <p class="text-sm opacity-0 transform translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">Discover flavors</p>
+//   </div>
+//   <div class="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 hover:opacity-20"></div>
+// </a>
    
      
-    `;
+//     `;
+//   }
+// }
+
+class AreaCard extends BaseCard {
+  render() {
+    const a = this.createLink('#', `
+      area-card relative overflow-hidden w-full md:w-1/4 h-48 rounded-xl shadow-lg 
+      transition-all duration-300 ease-in-out transform hover:scale-105
+    `);
+    a.dataset.id = this.strArea;
+    a.dataset.type = 'area';
+
+    const bgDiv = this.createElementWithClass('div', 
+      'absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-800 opacity-75'
+    );
+
+    const contentDiv = this.createElementWithClass('div', 
+      'absolute inset-0 flex flex-col items-center justify-center p-6 text-white z-10'
+    );
+
+    const icon = this.createElementWithClass('i', 'fa-solid fa-globe text-4xl mb-3 animate-bounce');
+    const h3 = this.createElementWithClass('h3', 'text-2xl font-bold mb-2');
+    h3.textContent = this.strArea;
+    const p = this.createElementWithClass('p', 
+      'text-sm opacity-0 transform translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0'
+    );
+    p.textContent = 'Discover flavors';
+
+    contentDiv.appendChild(icon);
+    contentDiv.appendChild(h3);
+    contentDiv.appendChild(p);
+
+    const hoverDiv = this.createElementWithClass('div', 
+      'absolute inset-0 bg-black opacity-0 transition-opacity duration-300 hover:opacity-20'
+    );
+
+    a.appendChild(bgDiv);
+    a.appendChild(contentDiv);
+    a.appendChild(hoverDiv);
+
+    return a.outerHTML;
   }
 }
 
-class CardIngredients {
-  constructor({ idIngredient, strIngredient, strDescription }) {
-    Object.assign(this, { idIngredient, strIngredient, strDescription });
-  }
+// class CardIngredients {
+//   constructor({ idIngredient, strIngredient, strDescription }) {
+//     Object.assign(this, { idIngredient, strIngredient, strDescription });
+//   }
+//   render() {
+//     return `
+//   <a href="#" class="ingredient-card group" data-id="${this.strIngredient}" data-type="ingredient">
+//     <div class="bg-gradient-to-br from-purple-500 to-indigo-800 dark:from-purple-700 dark:to-indigo-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+//       <div class="p-4 flex flex-col items-center">
+//         <div class="w-20 h-20 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mb-3 group-hover:animate-bounce">
+//           <i class="fas fa-pepper-hot text-3xl text-green-500 dark:text-green-500"></i>
+//         </div>
+//         <h3 class="text-lg font-bold text-white dark:text-white text-center mb-2">${this.strIngredient}</h3>
+//         <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-white bg-green-300 rounded-full group-hover:bg-green-600 transition-colors duration-300">
+//           Explore
+//           <i class="fas fa-chevron-right ml-1 group-hover:translate-x-1 transition-transform duration-300"></i>
+//         </span>
+//       </div>
+//     </div>
+//   </a>
+//     `;
+//   }
+// }
+
+class CardIngredients extends BaseCard {
   render() {
-    return `
-  <a href="#" class="ingredient-card group" data-id="${this.strIngredient}" data-type="ingredient">
-    <div class="bg-gradient-to-br from-purple-500 to-indigo-800 dark:from-purple-700 dark:to-indigo-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
-      <div class="p-4 flex flex-col items-center">
-        <div class="w-20 h-20 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mb-3 group-hover:animate-bounce">
-          <i class="fas fa-pepper-hot text-3xl text-green-500 dark:text-green-500"></i>
-        </div>
-        <h3 class="text-lg font-bold text-white dark:text-white text-center mb-2">${this.strIngredient}</h3>
-        <span class="inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-white bg-green-300 rounded-full group-hover:bg-green-600 transition-colors duration-300">
-          Explore
-          <i class="fas fa-chevron-right ml-1 group-hover:translate-x-1 transition-transform duration-300"></i>
-        </span>
-      </div>
-    </div>
-  </a>
-    `;
+    const a = this.createLink('#', 'ingredient-card group');
+    a.dataset.id = this.strIngredient;
+    a.dataset.type = 'ingredient';
+
+    const mainDiv = this.createElementWithClass('div', `
+      bg-gradient-to-br from-purple-500 to-indigo-800 dark:from-purple-700 dark:to-indigo-800 
+      rounded-xl shadow-lg overflow-hidden transform transition duration-300 
+      hover:-translate-y-2 hover:shadow-xl
+    `);
+
+    const contentDiv = this.createElementWithClass('div', 'p-4 flex flex-col items-center');
+
+    const iconDiv = this.createElementWithClass('div', `
+      w-20 h-20 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mb-3 
+      group-hover:animate-bounce
+    `);
+    const icon = this.createElementWithClass('i', 'fas fa-pepper-hot text-3xl text-green-500 dark:text-green-500');
+    iconDiv.appendChild(icon);
+
+    const h3 = this.createElementWithClass('h3', 'text-lg font-bold text-white dark:text-white text-center mb-2');
+    h3.textContent = this.strIngredient;
+
+    const span = this.createElementWithClass('span', `
+      inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-white 
+      bg-green-300 rounded-full group-hover:bg-green-600 transition-colors duration-300
+    `);
+    span.textContent = 'Explore';
+    const chevron = this.createElementWithClass('i', 'fas fa-chevron-right ml-1 group-hover:translate-x-1 transition-transform duration-300');
+    span.appendChild(chevron);
+
+    contentDiv.appendChild(iconDiv);
+    contentDiv.appendChild(h3);
+    contentDiv.appendChild(span);
+    mainDiv.appendChild(contentDiv);
+    a.appendChild(mainDiv);
+
+    return a.outerHTML;
   }
 }
 
@@ -761,6 +941,8 @@ const getRandomMeals = async () => {
     }
   } catch (error) {
     console.error("Error:", error);
+    container.innerHTML = "<p>Failed to load meals. Please refresh the page.</p>";
+    createToast('Unable to load meals. Please check your connection and try again.');
   } finally {
     hideLoader();
   }
@@ -861,14 +1043,29 @@ const displayIngredients = (ingredients) => {
 };
 
 const displayMealDetails = async (idMeal) => {
-  await displayContent(
-    fetchData(
-      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`
-    ).then((data) => data.meals?.[0]),
-    (meal) => {
-      if (meal) container.innerHTML = new MainCardDetails(meal).render();
+  // await displayContent(
+  //   fetchData(
+  //     `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`
+  //   ).then((data) => data.meals?.[0]),
+  //   (meal) => {
+  //     if (meal) container.innerHTML = new MainCardDetails(meal).render();
+  //   }
+  // );
+  try {
+    showLoader();
+    const data = await fetchData(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
+    if (data && data.meals && data.meals[0]) {
+      container.innerHTML = new MainCardDetails(data.meals[0]).render();
+    } else {
+      throw new Error('Meal details not found');
     }
-  );
+  } catch (error) {
+    console.error("Error:", error);
+    container.innerHTML = "<p>Failed to load meal details. Please try again.</p>";
+    createToast('Unable to load meal details. Please try again later.');
+  } finally {
+    hideLoader();
+  }
 };
 
 const displayCategoryDetails = async (strCategory) => {
@@ -931,6 +1128,9 @@ const displayIngredientsDetails = async (strIngredient) => {
   }
 };
 
+
+
+
 const handleCardClick = async (event) => {
   const target = event.target.closest("a[data-id]");
   if (!target) return;
@@ -948,6 +1148,79 @@ const handleCardClick = async (event) => {
 
   await (actions[type] || actions.default)();
 };
+//  /delegateEvent
+const delegateEvent = (parentElement, eventType, selector, handler) => {
+  parentElement.addEventListener(eventType, (event) => {
+    const targetElement = event.target.closest(selector);
+    if (targetElement) {
+      handler(event, targetElement);
+    }
+  });
+};
+
+delegateEvent(document.body, 'click', 'a[data-id]', (event, target) => {
+  event.preventDefault();
+  const { id, type } = target.dataset;
+
+  const actions = {
+    category: () => displayCategoryDetails(target.querySelector('p').textContent.trim()),
+    area: () => displayAreaDetails(id),
+    ingredient: () => displayIngredientsDetails(id),
+    default: () => displayMealDetails(id),
+  };
+
+  (actions[type] || actions.default)();
+});
+
+// /Navigation menu items
+
+delegateEvent(document.body, 'click', '.nav-item', (event, target) => {
+  event.preventDefault();
+  const action = target.dataset.action;
+
+  const actions = {
+    loadCategories: getCategory,
+    loadAreas: getArea,
+    loadIngredients: getIngredients,
+    contact: () => {
+      const contact = new Contact();
+      contact.display();
+    },
+    search: () => {
+      const contentContainer = document.getElementById('content');
+      contentContainer.innerHTML = '';
+      new Search({}).mount(contentContainer);
+    },
+  };
+
+  if (actions[action]) {
+    actions[action]();
+  }
+});
+
+delegateEvent(document.body, 'submit', '#contactForm', async (event, form) => {
+  event.preventDefault();
+  try {
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    createToast('Form submitted successfully!', 'success');
+  } catch (error) {
+    console.error('Form submission error:', error);
+    createToast('Failed to submit form. Please try again.');
+  }
+});
+
+delegateEvent(document.body, 'click', '.ingredient-item', (event, target) => {
+  const ingredient = target.dataset.ingredient;
+  displayIngredientsDetails(ingredient);
+});
+
+delegateEvent(document.body, 'click', '.youtube-link', (event, target) => {
+  event.preventDefault();
+  const videoUrl = target.href;
+  // Implement your video playing logic here
+  console.log(`Playing video: ${videoUrl}`);
+});
 
 document.body.addEventListener("click", handleCardClick, { passive: false });
 
@@ -986,6 +1259,17 @@ document.addEventListener("DOMContentLoaded", function () {
     search.mount(contentContainer);
   });
 });
+
+// document.getElementById('contactForm').addEventListener('submit', async (e) => {
+//   e.preventDefault();
+//   try {
+//     await new Promise(resolve => setTimeout(resolve, 1000));
+//     createToast('Form submitted successfully!', 'success');
+//   } catch (error) {
+//     console.error('Form submission error:', error);
+//     createToast('Failed to submit form. Please try again.');
+//   }
+// });
 
 document.addEventListener('DOMContentLoaded', () => {
   getRandomMeals();
