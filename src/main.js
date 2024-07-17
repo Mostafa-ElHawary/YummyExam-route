@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebar.classList.toggle('-translate-x-full');
   });
 });
+
+
 // Hero start
 
 var sidebar = (function () {
@@ -198,6 +200,8 @@ class Search {
   }
 }
 
+
+
 class MainCard {
   constructor({ idMeal, strMeal, strMealThumb, strTags }) {
     Object.assign(this, { idMeal, strMeal, strMealThumb, strTags });
@@ -205,23 +209,51 @@ class MainCard {
 
   renderElement() {
     const a = document.createElement("a");
-    a.className = "w-full md:w-1/4 m-1 p-2 bg-white rounded-md card  ";
+    a.className = `
+      group
+      w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5
+      p-2 m-1
+      bg-white rounded-xl shadow-md 
+      transform transition duration-300 ease-in-out 
+      hover:shadow-xl hover:scale-105 
+      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+      animate__animated animate__fadeIn animate__faster
+    `;
     a.dataset.id = this.idMeal;
     a.href = "#";
+
+    const imgContainer = document.createElement("div");
+    imgContainer.className = "overflow-hidden rounded-lg";
 
     const img = document.createElement("img");
     img.src = this.strMealThumb;
     img.alt = this.strTags ?? "";
-    img.className = "w-full mb-2 rounded-md";
+    img.className = `
+      w-full h-48 object-cover
+      transform transition duration-300 ease-in-out
+      group-hover:scale-110 group-hover:rotate-2
+    `;
+    imgContainer.appendChild(img);
 
     const p = document.createElement("p");
-    p.className = "text-black text-center font-semibold	";
+    p.className = `
+      mt-2 text-gray-800 text-center font-semibold truncate
+      transform transition duration-300 ease-in-out
+      group-hover:text-indigo-600
+    `;
     p.textContent = this.strMeal;
 
-    a.appendChild(img);
+    a.appendChild(imgContainer);
     a.appendChild(p);
 
-    return a;
+    a.addEventListener('mouseenter', () => {
+      a.classList.add('animate__pulse');
+    });
+    a.addEventListener('mouseleave', () => {
+      a.classList.remove('animate__pulse');
+    });
+
+    return a;    
   }
 }
 
