@@ -9,8 +9,10 @@
   }
   
   html {
-    font: 1em/1.5 "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
-    /* color: #333; */
+    font-family: "Edu AU VIC WA NT Hand", cursive;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
   }
   
   .container {
@@ -34,17 +36,7 @@
     height: 1px;
     background: #333;
   }
-  /* .Hero {
-    background-image: linear-gradient(
-        rgba(7, 7, 18, 0.651),
-        rgba(22, 22, 56, 0.353),
-        rgba(146, 146, 36, 0.5)
-      ),
-      url("../images/events-heavenly-header.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-  } */
+
   .wrapper {
     margin: 0 5%;
   }
