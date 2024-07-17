@@ -501,7 +501,7 @@ class Contact {
   render() {
     return `
  <div class="min-h-screen p-8 flex items-center justify-center">
-  <div class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+  <div class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform  transition-all duration-300">
     <div class="p-8">
       <h2 class="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500 mb-8">Get in Touch</h2>
       <form id="contactForm" class="space-y-6">
